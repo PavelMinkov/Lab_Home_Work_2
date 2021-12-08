@@ -25,13 +25,13 @@ namespace HW1
         [Test]
         public void ExecuteTest()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
-            WebDriverWait fluentWait = new WebDriverWait(driver, timeout: TimeSpan.FromSeconds(30))
+            WebDriverWait fluentWait = new WebDriverWait(driver, timeout: TimeSpan.FromSeconds(5))
             {
-                PollingInterval = TimeSpan.FromSeconds(5),
+                PollingInterval = TimeSpan.FromSeconds(250),
             };
-            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException),typeof(StaleElementReferenceException));
+            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException),typeof(StaleElementReferenceException), typeof(ElementClickInterceptedException));
 
             Actions actionProvider = new Actions(driver);
 
@@ -40,7 +40,7 @@ namespace HW1
             IList<IWebElement> listElements = driver.FindElements(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')]"));
             listElements[0].Click();
 
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
 
             //listTitleMenu
             listElements = driver.FindElements(By.ClassName("tile-cats"));
@@ -55,37 +55,43 @@ namespace HW1
             element.Click();
 
             //elementSort
-            element = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("select.select-css")));
-            element.Click();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
-            element = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("select.select-css option:nth-child(2)")));
+            element = driver.FindElement(By.CssSelector("select[class*='select'] option[value*='expensive']"));
             element.Click();
 
-            //listProducts
-            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//span[@class='goods-tile__title']")));
-            element.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
 
-            //elementButtonBuy
-            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//ul[@class='product-buttons']//span[contains(@class,'buy-button')]")));
-            actionProvider.MoveToElement(element).Build().Perform();
-            element.Click();
+            //elementAddToCart
+            //element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//button[contains(@class,'buy-button')]")));
+            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+            //element.Click();
+            try
+            {
+                element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//button[contains(@class,'buy-button')]")));
+                element.Click();
+            }
+            catch (StaleElementReferenceException )
+            {
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+                element.Click();
+            }
 
-            //elementCartClose
-            element = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("div.modal__header button[class*='close']")));
-            element.Click();
-
-            //listBreadCrumbs
-            element = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//a[contains(@class,'breadcrumbs__link')]")));
+            //elementLogo
+            element = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("a.header__logo")));
             element.Click();
 
             //PRODUCT_2
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
-
             //listMenu
-            listElements = driver.FindElements(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')]"));
-            listElements[1].Click();
+            try
+            {
+                element = fluentWait.Until(drv => drv.FindElement(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')][1]")));
+            }
+            catch (StaleElementReferenceException)
+            {
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+                element.Click();
+            }
 
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
 
             //listTitleMenu
             listElements = driver.FindElements(By.ClassName("tile-cats"));
@@ -103,31 +109,29 @@ namespace HW1
             element = driver.FindElement(By.CssSelector("select[class*='select'] option[value*='expensive']"));
             element.Click();
 
-            //listProducts
-            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//span[@class='goods-tile__title']")));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+
+            //elementAddToCart
+            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//button[contains(@class,'buy-button')]")));
             element.Click();
 
-            //elementButtonBuy
-            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//ul[@class='product-buttons']//span[contains(@class,'buy-button')]")));
-            actionProvider.MoveToElement(element).Build().Perform();
-            element.Click();
-
-            //elementCartClose
-            element = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("div.modal__header button[class*='close']")));
-            element.Click();
-
-            //listBreadCrumbs
-            element = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//a[contains(@class,'breadcrumbs__link')]")));
+            //elementLogo
+            element = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("a.header__logo")));
             element.Click();
 
             //PRODUCT_3
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
-
             //listMenu
-            listElements = driver.FindElements(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')]"));
-            listElements[1].Click();
+            try
+            {
+                element = fluentWait.Until(drv => drv.FindElement(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')][1]")));
+            }
+            catch (StaleElementReferenceException)
+            {
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+                element.Click();
+            }
 
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
 
             //listTitleMenu
             listElements = driver.FindElements(By.ClassName("tile-cats"));
@@ -145,29 +149,20 @@ namespace HW1
             element = driver.FindElement(By.CssSelector("select[class*='select'] option[value*='expensive']"));
             element.Click();
 
-            //listProducts
-            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//span[@class='goods-tile__title']")));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+
+            //elementAddToCart
+            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//button[contains(@class,'buy-button')]")));
             element.Click();
 
-            //elementButtonBuy
-            element = fluentWait.Until(drv => drv.FindElement(By.XPath("//ul[@class='product-buttons']//span[contains(@class,'buy-button')]")));
-            actionProvider.MoveToElement(element).Build().Perform();
+            //elementLogo
+            element = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("a.header__logo")));
             element.Click();
-
-            //elementCartClose
-            element = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("div.modal__header button[class*='close']")));
-            element.Click();
-
-            //listBreadCrumbs
-            element = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//a[contains(@class,'breadcrumbs__link')]")));
-            element.Click();
-
 
             //check quantity
             String quantity = driver.FindElement(By.XPath("//span[contains(@class,'counter')]")).Text;
             Console.WriteLine(quantity);
             Assert.IsTrue(quantity.Contains("3"));
-
 
             //check summ products
             element = driver.FindElement(By.XPath("//li[contains(@class,'cart')]"));
@@ -175,7 +170,7 @@ namespace HW1
 
             int summ = int.Parse(driver.FindElement(By.XPath("//div[@class='cart-receipt__sum-price']/span[1]")).Text);
             Console.WriteLine(summ);
-            Assert.That(summ, Is.LessThan(50000));
+            Assert.That(summ, Is.LessThan(60000));
 
             //make screenshot
             try
