@@ -31,7 +31,7 @@ namespace HW1
             {
                 PollingInterval = TimeSpan.FromSeconds(250),
             };
-            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException),typeof(StaleElementReferenceException), typeof(ElementClickInterceptedException));
+            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException), typeof(ElementClickInterceptedException));
 
             Actions actionProvider = new Actions(driver);
 
@@ -66,10 +66,16 @@ namespace HW1
             //element.Click();
             try
             {
-                element = fluentWait.Until(drv => drv.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//button[contains(@class,'buy-button')]")));
+                element = driver.FindElement(By.XPath("//li[contains(@class,'catalog')][1]//button[contains(@class,'buy-button')]"));
                 element.Click();
             }
-            catch (StaleElementReferenceException )
+            catch (ElementClickInterceptedException)
+            {
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+                element.Click();
+            }
+
+            catch (StaleElementReferenceException)
             {
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
                 element.Click();
@@ -83,8 +89,15 @@ namespace HW1
             //listMenu
             try
             {
-                element = fluentWait.Until(drv => drv.FindElement(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')][1]")));
+                element = driver.FindElement(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')][1]"));
+                element.Click();
             }
+            catch (ElementClickInterceptedException)
+            {
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+                element.Click();
+            }
+
             catch (StaleElementReferenceException)
             {
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
@@ -123,8 +136,15 @@ namespace HW1
             //listMenu
             try
             {
-                element = fluentWait.Until(drv => drv.FindElement(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')][1]")));
+                element = driver.FindElement(By.XPath("//ul[contains(@class,'menu-categories_type_main')]/li[contains(@class,'menu-categories')][1]"));
+                element.Click();
             }
+            catch (ElementClickInterceptedException)
+            {
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+                element.Click();
+            }
+
             catch (StaleElementReferenceException)
             {
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
